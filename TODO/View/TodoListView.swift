@@ -4,6 +4,11 @@ struct TodoListView: View {
     @StateObject private var viewModel = TodoListViewModel()
     @State private var selection: Set<Int> = []
     @State private var isEditing = false
+    @State private var isPresentingEditSheet = false
+    @State private var selectedTodo: TodoElement?
+
+    // New state variable to track the sheet presentation
+    @State private var presentSheet = false
 
     var body: some View {
         NavigationView {
@@ -18,12 +23,34 @@ struct TodoListView: View {
                         Color(selection.contains(todo.id) ? .blue : .clear)
                             .opacity(0.3)
                     )
+                    .overlay(
+                        Button(action: {
+                            // Present the edit sheet when the button is tapped
+                            selectedTodo = todo
+                            presentSheet.toggle()
+                        }) {
+                            Color.clear // Make the entire VStack tappable
+                        }
+                    )
                 }
                 .onDelete { indexSet in
                     indexSet.forEach { index in
-                        // Call deleteTodo on the viewModel
                         viewModel.deleteTodo(at: index)
                     }
+                }
+            }
+            .sheet(isPresented: $presentSheet) { // Use separate state for sheet presentation
+                if let selectedTodo = selectedTodo {
+                    EditTodoView(viewModel: viewModel, todo: selectedTodo) {
+                        // Update the selection after editing
+                        selection.removeAll()
+                        presentSheet = false // Dismiss the sheet
+                    }
+                }
+            }
+            .onChange(of: presentSheet) { newValue in
+                if newValue, let initialTodo = viewModel.todos.first {
+                    selectedTodo = initialTodo
                 }
             }
             .navigationTitle("MyTodos")
@@ -43,11 +70,15 @@ struct TodoListView: View {
             .environment(\.editMode, .constant(isEditing ? .active : .inactive))
             .onAppear {
                 viewModel.fetchData()
+                // Initialize selectedTodo here if needed
+                   if let initialTodo = viewModel.todos.first {
+                       selectedTodo = initialTodo
+                       presentSheet = true
+                   }
             }
             .onDisappear {
-                // Clear selection when the view disappears (e.g., when "Done" is tapped)
                 selection.removeAll()
-                isEditing = false // Dismiss edit mode
+                isEditing = false
             }
         }
     }

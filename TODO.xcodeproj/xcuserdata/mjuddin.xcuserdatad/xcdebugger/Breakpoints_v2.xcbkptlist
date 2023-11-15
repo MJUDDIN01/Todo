@@ -3,4 +3,54 @@
    uuid = "D550248D-7959-4674-A686-A7C5944A773B"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D8E6B668-64BE-417D-A0F6-CD26C4087791"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TODO/View/EditTodoView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "9"
+            endingLineNumber = "9"
+            landmarkName = "init(viewModel:todo:onEditingComplete:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "D8E6B668-64BE-417D-A0F6-CD26C4087791 - 619d295ca5f08601"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TODO.EditTodoView.init(viewModel: TODO.TodoListViewModel, todo: TODO.TodoElement, onEditingComplete: () -&gt; ()) -&gt; TODO.EditTodoView"
+                  moduleName = "TODO"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mjuddin/Desktop/TODO/TODO/View/EditTodoView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "16"
+                  endingLineNumber = "16"
+                  offsetFromSymbolStart = "128">
+               </Location>
+               <Location
+                  uuid = "D8E6B668-64BE-417D-A0F6-CD26C4087791 - 619d295ca5f0865e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TODO.EditTodoView.init(viewModel: TODO.TodoListViewModel, todo: TODO.TodoElement, onEditingComplete: () -&gt; ()) -&gt; TODO.EditTodoView"
+                  moduleName = "TODO"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mjuddin/Desktop/TODO/TODO/View/EditTodoView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "15"
+                  endingLineNumber = "15"
+                  offsetFromSymbolStart = "1222">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

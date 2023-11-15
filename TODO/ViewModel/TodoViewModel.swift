@@ -63,6 +63,40 @@ class TodoListViewModel: ObservableObject {
         }.resume()
     }
     
+    func updateTodo(_ updatedTodo: TodoElement) {
+           guard let url = URL(string: "\(baseUrl)/\(updatedTodo.id)") else {
+               return
+           }
+
+           var request = URLRequest(url: url)
+           request.httpMethod = "PUT" // Use "PUT" method for updating a resource
+           request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+           do {
+               let encoder = JSONEncoder()
+               request.httpBody = try encoder.encode(updatedTodo)
+           } catch {
+               print("Error encoding updated todo: \(error.localizedDescription)")
+               return
+           }
+
+           URLSession.shared.dataTask(with: request) { data, response, error in
+               if let error = error {
+                   print("Error updating todo: \(error.localizedDescription)")
+                   return
+               }
+               if let data = data {
+                       print("Server response: \(String(data: data, encoding: .utf8) ?? "No data")")
+                   }
+               // If the network request is successful, update the local todos array
+               DispatchQueue.main.async {
+                   if let index = self.todos.firstIndex(where: { $0.id == updatedTodo.id }) {
+                       self.todos[index] = updatedTodo
+                   }
+               }
+           }.resume()
+       }
+    
     func deleteTodo(at index: Int) {
         guard index >= 0, index < todos.count else {
             return
