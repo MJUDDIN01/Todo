@@ -19,7 +19,12 @@ struct TodoListView: View {
                             .opacity(0.3)
                     )
                 }
-                .onDelete(perform: deleteTodos)
+                .onDelete { indexSet in
+                    indexSet.forEach { index in
+                        // Call deleteTodo on the viewModel
+                        viewModel.deleteTodo(at: index)
+                    }
+                }
             }
             .navigationTitle("MyTodos")
             .navigationBarItems(
@@ -45,15 +50,5 @@ struct TodoListView: View {
                 isEditing = false // Dismiss edit mode
             }
         }
-    }
-
-    private func deleteTodos(offsets: IndexSet) {
-        withAnimation {
-            // Remove selected todos from the local array
-            viewModel.todos.remove(atOffsets: offsets)
-        }
-
-        // Clear selection after deletion
-        selection.removeAll()
     }
 }

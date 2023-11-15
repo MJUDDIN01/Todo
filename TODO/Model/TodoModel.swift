@@ -1,14 +1,8 @@
-//
-//  TodoModel.swift
-//  TODO
-//
-//  Created by Jasim Uddin on 14/11/2023.
-//
 
 import Foundation
 
 // MARK: - TodoElement
-struct TodoElement: Codable {
+struct TodoElement: Codable, Equatable {
     let id: Int
     let title, priority: String
 }
