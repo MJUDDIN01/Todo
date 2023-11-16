@@ -16,6 +16,7 @@
 		9F91433C2B03DCBE00C1A99F /* EndPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F91433B2B03DCBE00C1A99F /* EndPoints.swift */; };
 		9F91433E2B03E07400C1A99F /* AddTodoItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F91433D2B03E07400C1A99F /* AddTodoItemView.swift */; };
 		9F9143422B04E8FD00C1A99F /* EditTodoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F9143412B04E8FD00C1A99F /* EditTodoView.swift */; };
+		9F9143442B0597B700C1A99F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F9143432B0597B700C1A99F /* ContentView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 		9F91433B2B03DCBE00C1A99F /* EndPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPoints.swift; sourceTree = "<group>"; };
 		9F91433D2B03E07400C1A99F /* AddTodoItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTodoItemView.swift; sourceTree = "<group>"; };
 		9F9143412B04E8FD00C1A99F /* EditTodoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTodoView.swift; sourceTree = "<group>"; };
+		9F9143432B0597B700C1A99F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +96,7 @@
 				9F9143352B03927000C1A99F /* TodoListView.swift */,
 				9F91433D2B03E07400C1A99F /* AddTodoItemView.swift */,
 				9F9143412B04E8FD00C1A99F /* EditTodoView.swift */,
+				9F9143432B0597B700C1A99F /* ContentView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -186,6 +189,7 @@
 			files = (
 				9F9143342B0391AB00C1A99F /* TodoViewModel.swift in Sources */,
 				9F91433E2B03E07400C1A99F /* AddTodoItemView.swift in Sources */,
+				9F9143442B0597B700C1A99F /* ContentView.swift in Sources */,
 				9F9143312B038CEF00C1A99F /* TodoModel.swift in Sources */,
 				9F91433C2B03DCBE00C1A99F /* EndPoints.swift in Sources */,
 				9F9143362B03927000C1A99F /* TodoListView.swift in Sources */,
