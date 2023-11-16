@@ -38,65 +38,71 @@ struct TodoListView: View {
                     }
                 }
                 .onDelete { indexSet in
-                    indexSet.forEach { index in
-                        viewModel.deleteTodo(at: index)
+                    Task {
+                        for index in indexSet {
+                            await viewModel.deleteTodo(at: index)
+                        }
                     }
                 }
             }
-            // Use separate state for sheet presentation
-            .sheet(isPresented: $presentSheet) {
-                if let selectedTodo = selectedTodo {
-                    EditTodoView(viewModel: viewModel, todo: selectedTodo) {
-                        // Update the selection after editing
-                        selection.removeAll()
-                        // Dismiss the sheet
+                // Use separate state for sheet presentation
+                .sheet(isPresented: $presentSheet) {
+                    if let selectedTodo = selectedTodo {
+                        EditTodoView(viewModel: viewModel, todo: selectedTodo) {
+                            // Update the selection after editing
+                            selection.removeAll()
+                            // Dismiss the sheet
+                            presentSheet = false
+                        }
+                    }
+                }
+                .onChange(of: presentSheet) { newValue in
+                    if newValue, let todo = selectedTodo, let index = viewModel.todos.firstIndex(where: { $0.id == todo.id }) {
+                        // Update the selectedTodo only when the sheet is about to be presented
+                        selectedTodo = viewModel.todos[index]
+                    }
+                }
+                .navigationTitle("MyTodos")
+                .navigationBarItems(
+                    leading: Button(action: {
+                        isEditing.toggle()
+                    }) {
+                        Text(isEditing ? "Done" : "Edit")
+                    },
+                    trailing: Button(action: {
+                        // Reset selectedTodo and close the sheet if it's open
+                        selectedTodo = nil
                         presentSheet = false
+                        // Present the AddTodoItemView
+                        isPresentingAddTodoView = true
+                    }) {
+                        Image(systemName: "plus")
                     }
+                )
+                .sheet(isPresented: $isPresentingAddTodoView) {
+                    AddTodoItemView(
+                        viewModel: viewModel,
+                        isPresentingAddTodoView: $isPresentingAddTodoView,
+                        presentationMode: presentationMode
+                    )
                 }
-            }
-            .onChange(of: presentSheet) { newValue in
-                if newValue, let todo = selectedTodo, let index = viewModel.todos.firstIndex(where: { $0.id == todo.id }) {
-                    // Update the selectedTodo only when the sheet is about to be presented
-                    selectedTodo = viewModel.todos[index]
+                .environment(\.editMode, .constant(isEditing ? .active : .inactive))
+                .onAppear {
+                    Task {
+                           await viewModel.fetchData()
+                           // Initialize selectedTodo here if needed
+                           if let initialTodo = viewModel.todos.first {
+                               DispatchQueue.main.async {
+                                   selectedTodo = initialTodo
+                                   presentSheet = false
+                               }
+                           }
+                       }
+                   }
+                .onDisappear {
+                    selection.removeAll()
+                    isEditing = false
                 }
-            }
-            .navigationTitle("MyTodos")
-            .navigationBarItems(
-                leading: Button(action: {
-                    isEditing.toggle()
-                }) {
-                    Text(isEditing ? "Done" : "Edit")
-                },
-                trailing: Button(action: {
-                    // Reset selectedTodo and close the sheet if it's open
-                    selectedTodo = nil
-                    presentSheet = false
-                    // Present the AddTodoItemView
-                    isPresentingAddTodoView = true
-                }) {
-                    Image(systemName: "plus")
-                }
-            )
-            .sheet(isPresented: $isPresentingAddTodoView) {
-                AddTodoItemView(
-                      viewModel: viewModel,
-                      isPresentingAddTodoView: $isPresentingAddTodoView,
-                      presentationMode: presentationMode
-                  )
-            }
-            .environment(\.editMode, .constant(isEditing ? .active : .inactive))
-            .onAppear {
-                viewModel.fetchData()
-                // Initialize selectedTodo here if needed
-                if let initialTodo = viewModel.todos.first {
-                    selectedTodo = initialTodo
-                    presentSheet = true
-                }
-            }
-            .onDisappear {
-                selection.removeAll()
-                isEditing = false
             }
         }
     }
-}

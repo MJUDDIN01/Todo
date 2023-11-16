@@ -11,23 +11,37 @@ struct EditTodoView: View {
         self._editedTodo = State(initialValue: todo)
         self.onEditingComplete = onEditingComplete
     }
+    
     var body: some View {
         NavigationView {
             VStack {
                 TextField("Title", text: $editedTodo.title)
                     .padding()
+                    .border(Color.gray)
                 TextField("Priority", text: $editedTodo.priority)
                     .padding()
+                    .border(Color.gray)
                 Button("Save") {
-                    // Update the todo on the server
-                    viewModel.updateTodo(editedTodo)
-                    // Call the completion handler
-                    onEditingComplete()
+                    Task {
+                        await updateTodo()
+                    }
                 }
                 .padding()
+                .background(.brown)
+                .foregroundColor(Color.white)
             }
             .padding()
             .navigationTitle("Edit Todo")
+        }
+    }
+    
+    func updateTodo() async {
+        do {
+            try await viewModel.updateTodo(editedTodo)
+            onEditingComplete()
+        } catch {
+            print("Error updating todo: \(error)")
+            // This catch block is not currently reachable but kept for potential future changes
         }
     }
 }

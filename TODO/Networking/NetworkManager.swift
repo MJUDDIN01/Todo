@@ -1,10 +1,3 @@
-//
-//  NetworkManager.swift
-//  TODO
-//
-//  Created by Jasim Uddin on 16/11/2023.
-//
-
 import Foundation
 
 class NetworkManager {
@@ -14,36 +7,21 @@ class NetworkManager {
     
     private init() {}
     
-    func fetchData(completion: @escaping ([TodoElement]) -> Void) {
+    func fetchData() async throws -> [TodoElement] {
         guard let url = URL(string: baseUrl) else {
-            completion([])
-            return
+            throw NetworkError.invalidURL
         }
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        URLSession.shared.dataTask(with: request) { data, _, error in
-            if let error = error {
-                print("Error: \(error.localizedDescription)")
-                completion([])
-                return
-            }
-            if let data = data {
-                do {
-                    let decodedData = try JSONDecoder().decode([TodoElement].self, from: data)
-                    completion(decodedData)
-                } catch {
-                    print("Error decoding JSON: \(error.localizedDescription)")
-                    completion([])
-                }
-            }
-        }.resume()
+        let (data, _) = try await URLSession.shared.data(for: request)
+        let decodedData = try JSONDecoder().decode([TodoElement].self, from: data)
+        return decodedData
     }
     
-    func addTodo(newTodo: TodoElement, completion: @escaping (Bool) -> Void) {
+    func addTodo(newTodo: TodoElement) async throws -> Bool {
         guard let url = URL(string: baseUrl) else {
-            completion(false)
-            return
+            throw NetworkError.invalidURL
         }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -53,24 +31,16 @@ class NetworkManager {
             let encoder = JSONEncoder()
             request.httpBody = try encoder.encode(newTodo)
         } catch {
-            print("Error encoding todo: \(error.localizedDescription)")
-            completion(false)
-            return
+            throw NetworkError.encodingError
         }
         
-        URLSession.shared.dataTask(with: request) { _, _, error in
-            if let error = error {
-                print("Error adding todo: \(error.localizedDescription)")
-                completion(false)
-                return
-            }
-            completion(true)
-        }.resume()
+        let (_, response) = try await URLSession.shared.data(for: request)
+        return (response as? HTTPURLResponse)?.statusCode == 200
     }
     
-    func updateTodo(_ updatedTodo: TodoElement) {
+    func updateTodo(_ updatedTodo: TodoElement) async throws {
         guard let url = URL(string: "\(baseUrl)/\(updatedTodo.id)") else {
-            return
+            throw NetworkError.invalidURL
         }
         var request = URLRequest(url: url)
         request.httpMethod = "PUT"
@@ -80,34 +50,27 @@ class NetworkManager {
             let encoder = JSONEncoder()
             request.httpBody = try encoder.encode(updatedTodo)
         } catch {
-            print("Error encoding updated todo: \(error.localizedDescription)")
-            return
+            throw NetworkError.encodingError
         }
         
-        URLSession.shared.dataTask(with: request) { _, _, error in
-            if let error = error {
-                print("Error updating todo: \(error.localizedDescription)")
-                return
-            }
-            // Handle success response or further processing if needed
-        }.resume()
+        let (_, _) = try await URLSession.shared.data(for: request)
+        // Handle success response or further processing if needed
     }
     
-    func sendDeleteRequest(todoID: Int, completion: @escaping (Bool) -> Void) {
+    func deleteTodo(todoID: Int) async throws -> Bool {
         guard let url = URL(string: "\(baseUrl)/\(todoID)") else {
-            completion(false)
-            return
+            throw NetworkError.invalidURL
         }
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
         
-        URLSession.shared.dataTask(with: request) { _, _, error in
-            if let error = error {
-                print("Error deleting todo: \(error.localizedDescription)")
-                completion(false)
-                return
-            }
-            completion(true)
-        }.resume()
+        let (_, response) = try await URLSession.shared.data(for: request)
+        return (response as? HTTPURLResponse)?.statusCode == 200
     }
+}
+
+enum NetworkError: Error {
+    case invalidURL
+    case encodingError
+    // Add more error cases as needed
 }
