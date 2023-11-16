@@ -7,4 +7,4 @@
 
 import Foundation
 
-let baseUrl = "https://warp-wiry-rugby.glitch.me/todos"
+//let baseUrl = "https://warp-wiry-rugby.glitch.me/todos"
