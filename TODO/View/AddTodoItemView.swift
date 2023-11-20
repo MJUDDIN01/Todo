@@ -26,7 +26,7 @@ struct AddTodoItemView: View {
 
                 Button("Add Todo") {
                     Task {
-                        await addTodo()
+                        await addTodoAndUpdateList()
                     }
                 }
                 .padding()
@@ -41,8 +41,18 @@ struct AddTodoItemView: View {
         }
     }
 
-    private func addTodo() async {
-        await viewModel.addTodo(title: newTodoTitle, priority: newTodoPriority)
-        isPresentingAddTodoView = false
+    private func addTodoAndUpdateList() async {
+        do {
+            // Add the new todo
+            try await viewModel.addTodo(title: newTodoTitle, priority: newTodoPriority)
+            
+            // Fetch updated data after adding the todo
+            await viewModel.fetchData()
+
+            // Close the sheet
+            isPresentingAddTodoView = false
+        } catch {
+            print("Error adding and fetching todo: \(error)")
+        }
     }
 }
