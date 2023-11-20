@@ -4,7 +4,7 @@ import SwiftUI
 struct EditTodoView: View {
     @ObservedObject var viewModel: TodoListViewModel
     @State private var editedTodo: TodoElement
-    var onEditingComplete: () -> Void
+    private var onEditingComplete: () -> Void
     
     init(viewModel: TodoListViewModel, todo: TodoElement, onEditingComplete: @escaping () -> Void) {
         self.viewModel = viewModel
@@ -29,13 +29,14 @@ struct EditTodoView: View {
                 .padding()
                 .background(.brown)
                 .foregroundColor(Color.white)
+                .cornerRadius(8)
             }
             .padding()
             .navigationTitle("Edit Todo")
         }
     }
     
-    func updateTodo() async {
+    private func updateTodo() async {
         do {
             try await viewModel.updateTodo(editedTodo)
             onEditingComplete()

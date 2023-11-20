@@ -7,7 +7,7 @@ struct AddTodoItemView: View {
     @State private var newTodoPriority = ""
     @Binding var isPresentingAddTodoView: Bool
 
-    var isAddButtonEnabled: Bool {
+    private var isAddButtonEnabled: Bool {
         return newTodoTitle.count >= 3 && newTodoPriority.count >= 3
     }
 
@@ -41,7 +41,7 @@ struct AddTodoItemView: View {
         }
     }
 
-    func addTodo() async {
+    private func addTodo() async {
         await viewModel.addTodo(title: newTodoTitle, priority: newTodoPriority)
         isPresentingAddTodoView = false
     }

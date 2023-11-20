@@ -38,7 +38,7 @@ class NetworkManager {
         return (response as? HTTPURLResponse)?.statusCode == 200
     }
     
-    func updateTodo(_ updatedTodo: TodoElement) async throws {
+    func updateTodo(_ updatedTodo: TodoElement) async throws -> Bool {
         guard let url = URL(string: "\(baseUrl)/\(updatedTodo.id)") else {
             throw NetworkError.invalidURL
         }
@@ -53,7 +53,8 @@ class NetworkManager {
             throw NetworkError.encodingError
         }
         
-        let (_, _) = try await URLSession.shared.data(for: request)
+        let (_, response) = try await URLSession.shared.data(for: request)
+        return (response as? HTTPURLResponse)?.statusCode == 200
         // Handle success response or further processing if needed
     }
     
@@ -67,10 +68,4 @@ class NetworkManager {
         let (_, response) = try await URLSession.shared.data(for: request)
         return (response as? HTTPURLResponse)?.statusCode == 200
     }
-}
-
-enum NetworkError: Error {
-    case invalidURL
-    case encodingError
-    // Add more error cases as needed
 }
