@@ -27,7 +27,7 @@ struct TodoListView: View {
                     }
                     .background(
                         // Highlight selected rows
-                        Color(selection.contains(todo.id) ? .blue : .clear)
+                        Color(selection.contains(Int(todo.id) ?? 0) ? .blue : .clear)
                             .opacity(0.3)
                     )
                     .contentShape(Rectangle())

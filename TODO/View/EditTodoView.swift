@@ -4,14 +4,18 @@ import SwiftUI
 struct EditTodoView: View {
     @ObservedObject var viewModel: TodoListViewModel
     @State private var editedTodo: TodoElement
+    private var originalTodo: TodoElement
     private var onEditingComplete: () -> Void
     
     init(viewModel: TodoListViewModel, todo: TodoElement, onEditingComplete: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.originalTodo = todo
         self._editedTodo = State(initialValue: todo)
         self.onEditingComplete = onEditingComplete
     }
     
+    @State private var showAlert = false
+
     var body: some View {
         NavigationView {
             VStack {
@@ -23,7 +27,7 @@ struct EditTodoView: View {
                     .border(Color.gray)
                 Button("Save") {
                     Task {
-                        await updateTodo()
+                        await saveChanges()
                     }
                 }
                 .padding()
@@ -33,16 +37,27 @@ struct EditTodoView: View {
             }
             .padding()
             .navigationTitle("Edit Todo")
+            .alert(isPresented: $showAlert) {
+                Alert(
+                    title: Text("No changes made"),
+                    message: Text("Nothing has changed."),
+                    dismissButton: .default(Text("Change Now"))
+                )
+            }
         }
     }
     
-    private func updateTodo() async {
-        do {
-            try await viewModel.updateTodo(editedTodo)
-            onEditingComplete()
-        } catch {
-            print("Error updating todo: \(error)")
-            // This catch block is not currently reachable but kept for potential future changes
+    private func saveChanges() async {
+        if editedTodo == originalTodo {
+            showAlert = true // Show the alert if nothing has changed
+        } else {
+            do {
+                try await viewModel.updateTodo(editedTodo)
+                onEditingComplete()
+            } catch {
+                print("Error updating todo: \(error)")
+            }
         }
     }
 }
+

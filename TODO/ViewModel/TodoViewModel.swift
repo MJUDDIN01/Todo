@@ -2,7 +2,7 @@ import Foundation
 
 class TodoListViewModel: ObservableObject {
     @Published var todos: [TodoElement] = []
-    private var lastUsedId: Int = 0
+    private var lastUsedId: String = UUID().uuidString
     
     func fetchData() async {
         do {
@@ -14,7 +14,6 @@ class TodoListViewModel: ObservableObject {
                 }
                 // Append only new todos to the existing todos array
                 self.todos += newTodos
-                print("Not able to add new todo: \(newTodos)")
             }
         } catch {
             print("Error fetching data: \(error)")
@@ -22,7 +21,7 @@ class TodoListViewModel: ObservableObject {
     }
     
     func addTodo(title: String, priority: String) async throws {
-        lastUsedId += 1
+        lastUsedId += UUID().uuidString
         let newTodo = TodoElement(id: lastUsedId, title: title, priority: priority)
         do {
             let success = try await NetworkManager.shared.addTodo(newTodo: newTodo)

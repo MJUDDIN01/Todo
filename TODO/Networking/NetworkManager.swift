@@ -3,7 +3,7 @@ import Foundation
 class NetworkManager {
     static let shared = NetworkManager() // Singleton instance
     
-    private let baseUrl = "https://warp-wiry-rugby.glitch.me/todos"
+    private let baseUrl = "https://655de1a29f1e1093c59a1379.mockapi.io/todo/v1/todo/"
     
     private init() {}
     
@@ -58,7 +58,7 @@ class NetworkManager {
         // Handle success response or further processing if needed
     }
     
-    func deleteTodo(todoID: Int) async throws -> Bool {
+    func deleteTodo(todoID: String) async throws -> Bool {
         guard let url = URL(string: "\(baseUrl)/\(todoID)") else {
             throw NetworkError.invalidURL
         }
